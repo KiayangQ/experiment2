@@ -1,4 +1,4 @@
-/***************** 
+﻿/***************** 
  * Untitled *
  *****************/
 
@@ -71,10 +71,10 @@ flowScheduler.add(trials_2LoopEnd);
 flowScheduler.add(thanksRoutineBegin());
 flowScheduler.add(thanksRoutineEachFrame());
 flowScheduler.add(thanksRoutineEnd());
-flowScheduler.add(quitPsychoJS, '感谢参加实验，点击下面的按键结束.', true);
+flowScheduler.add(quitPsychoJS, 'Thank you for your patience.', true);
 
 // quit if user presses Cancel in dialog box:
-dialogCancelScheduler.add(quitPsychoJS, 'Thank you for your patience.', false);
+dialogCancelScheduler.add(quitPsychoJS, '点击结束实验', false);
 
 psychoJS.start({
   expName: expName,
@@ -1405,6 +1405,42 @@ function thanksRoutineBegin(snapshot) {
     key_resp_6.keys = undefined;
     key_resp_6.rt = undefined;
     _key_resp_6_allKeys = [];
+    // Disable downloading results to browser
+    psychoJS._saveResults = 0; 
+    // Generate filename for results
+    let filename = psychoJS._experiment._experimentName + '_' + psychoJS._experiment._datetime + '.csv';
+    // Extract data object from experiment
+    let dataObj = psychoJS._experiment._trialsData;
+    // Convert data object to CSV
+    let data = [Object.keys(dataObj[0])].concat(dataObj).map(it => {
+        return Object.values(it).toString()
+    }).join('\n')
+    
+    // Send data to OSF via DataPipe
+    console.log('Saving data...');
+    fetch('https://pipe.jspsych.org/api/data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: '*/*',
+        },
+        body: JSON.stringify({
+            experimentID: 'iahmvvBWVDZl', // ⭑ UPDATE WITH YOUR DATAPIPE EXPERIMENT ID ⭑
+            filename: filename,
+            data: data,
+        }),
+    }).then(response => response.json()).then(data => {
+        // Log response and force experiment end
+        console.log(data);
+        quitPsychoJS();
+    })
+    
+    
+    
+    
+    
+    
+    
     psychoJS.experiment.addData('thanks.started', globalClock.getTime());
     thanksMaxDuration = null
     // keep track of which components have finished
