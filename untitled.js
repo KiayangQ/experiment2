@@ -74,7 +74,7 @@ flowScheduler.add(thanksRoutineEnd());
 flowScheduler.add(quitPsychoJS, 'Thank you for your patience.', true);
 
 // quit if user presses Cancel in dialog box:
-dialogCancelScheduler.add(quitPsychoJS, '点击结束实验', false);
+dialogCancelScheduler.add(quitPsychoJS, 'Thank you for your patience.', false);
 
 psychoJS.start({
   expName: expName,
